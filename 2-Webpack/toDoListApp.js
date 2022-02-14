@@ -8,7 +8,7 @@ import {
   let idSerializer = 0;
   createAddTaskContainer();
   if (localStorage) {
-    const localStorageList=restoreTasksFromStorage();
+    const localStorageList = restoreTasksFromStorage();
     localStorageList.forEach((taskInfo) => {
       createTask(JSON.parse(taskInfo).title);
     });

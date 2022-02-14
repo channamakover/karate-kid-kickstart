@@ -7,11 +7,12 @@ const deleteFromLocalStorage = function (id) {
 };
 
 const restoreTasksFromStorage = function () {
-    if (localStorage){
-        return Object.values(localStorage);}
+  if (localStorage) {
+    return Object.values(localStorage);
+  }
 };
 
-export  {
+export {
   setItemToLocalStorage,
   deleteFromLocalStorage,
   restoreTasksFromStorage,
