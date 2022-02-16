@@ -48,10 +48,11 @@ const styles = {
     width: "100px",
   },
   buttonStyle : {
-    width: "40px",
-    height: "20px",
-    textAlign: 'center',
-    backgroundColor: 'green',
+    width: "10ch",
+    height: "4ch",
+    textAlign: "center",
+    backgroundColor: "green",
+    padding: "5px",
   },
   addTaskContainer: {
     display: 'flex',
