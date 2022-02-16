@@ -1,9 +1,5 @@
 import jss from "jss";
 import preset from "jss-preset-default";
-
-console.log('what?');
-console.log({ jss })
-
 jss.setup(preset());
 const styles = {
     body: {
