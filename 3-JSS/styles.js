@@ -23,7 +23,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     flexDirection: 'column',
-    alignItems: 'center',
+    padding: '16px'
   },
   toDoTasks: {
     display: 'flex',
@@ -48,8 +48,6 @@ const styles = {
     width: "100px",
   },
   buttonStyle : {
-    width: "10ch",
-    height: "4ch",
     textAlign: "center",
     backgroundColor: "green",
     padding: "5px",
