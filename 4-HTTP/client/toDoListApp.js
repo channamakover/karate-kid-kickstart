@@ -118,11 +118,10 @@ import { getToDoList, addTask, editTask, deleteTask } from "./client.js";
   function editElementButtonHandler(event, taskInfo) {
     if (!taskInfo.isEditMode) {
       editElementTitle(taskInfo);
-      taskInfo.isEditMode = true;
     } else {
       setElementTitle(taskInfo);
-      taskInfo.isEditMode = false;
     }
+    taskInfo.isEditMode = !taskInfo.isEditMode;
   }
 
   function editElementTitle(taskInfo) {
