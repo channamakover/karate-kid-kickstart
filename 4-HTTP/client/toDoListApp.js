@@ -70,10 +70,11 @@ import { getToDoList, addTask, editTask, deleteTask } from "./client.js";
       taskId = (await addTask(title)).id;
     }
     const taskInfo = {
+      id: taskId,
       title: title,
       isEditMode: false,
       isDone: false,
-      id: taskId,
+      
     };
     const toDoTaskElement = createHtmlElement("li", [classes.toDoTasks]);
     toDoTaskElement.id = taskInfo.id;

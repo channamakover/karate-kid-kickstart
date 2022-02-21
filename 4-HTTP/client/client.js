@@ -16,8 +16,7 @@ const addTask = function (taskTitle) {
     .catch(errorHandler);
 };
 const editTask = function (taskInfo) {
-  const taskId = taskInfo.id;
-  const newTitle = taskInfo.title;
+  const { taskId, newTitle } = taskInfo;
   return instance
     .patch(`${baseURL}/todos/${taskId}`, { title: newTitle })
     .then((res) => res.data)
@@ -32,6 +31,6 @@ const deleteTask = function (taskId) {
 
 const errorHandler = (err) => {
   console.log(err);
-}
+};
 
 export { getToDoList, addTask, editTask, deleteTask };
