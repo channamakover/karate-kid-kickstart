@@ -3,7 +3,7 @@ import axios from "axios";
 const baseURL = "http://localhost:3000";
 const instance = axios;
 
-const getToDoList = async function () {
+const getToDoList = function () {
   return instance
     .get(`${baseURL}/todos`)
     .then((res) => res.data)
@@ -11,7 +11,7 @@ const getToDoList = async function () {
       console.log(err);
     });
 };
-const addTask = async function (taskTitle) {
+const addTask = function (taskTitle) {
   return instance
     .post(`${baseURL}/todos`, { title: taskTitle })
     .then((res) => res.data)
@@ -19,7 +19,7 @@ const addTask = async function (taskTitle) {
       console.log(err);
     });
 };
-const editTask = async function (taskInfo) {
+const editTask = function (taskInfo) {
   const taskId = taskInfo.id;
   const newTitle = taskInfo.title;
   return instance
@@ -29,7 +29,7 @@ const editTask = async function (taskInfo) {
       console.log(err);
     });
 };
-const deleteTask = async function (taskId) {
+const deleteTask = function (taskId) {
   return instance
     .delete(`${baseURL}/todos/${taskId}`)
     .then((res) => res.data)
