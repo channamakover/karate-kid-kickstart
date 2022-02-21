@@ -1,29 +1,28 @@
 import axios from "axios";
-
 const baseURL = "http://localhost:3000";
-const instance = axios;
+
 
 const getToDoList = function () {
-  return instance
-    .get(`${baseURL}/todos`)
+  return axios
+  .get(`${baseURL}/todos`)
     .then((res) => res.data)
     .catch(errorHandler);
 };
 const addTask = function (taskTitle) {
-  return instance
+  return axios
     .post(`${baseURL}/todos`, { title: taskTitle })
     .then((res) => res.data)
     .catch(errorHandler);
 };
 const editTask = function (taskInfo) {
   const { taskId, newTitle } = taskInfo;
-  return instance
+  return axios
     .patch(`${baseURL}/todos/${taskId}`, { title: newTitle })
     .then((res) => res.data)
     .catch(errorHandler);
 };
 const deleteTask = function (taskId) {
-  return instance
+  return axios
     .delete(`${baseURL}/todos/${taskId}`)
     .then((res) => res.data)
     .catch(errorHandler);
