@@ -36,7 +36,7 @@ router.patch("/:id", async (req, res) => {
   const taskId = req.params.id;
   const tasksList = await ToDoModel.findById(userId).clone();
   if (!tasksList.tasks[taskId]) {
-    res.sendStatus(400);
+    res.sendStatus(404);
     return;
   }
   tasksList.tasks[taskId].title = req.body.title;

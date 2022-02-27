@@ -3,7 +3,6 @@ import { getToDoList, addTask, editTask, deleteTask } from "./client.js";
 
 (async function () {
   createAddTaskContainer();
-  // await setCookies();
   const toDoList = await getToDoList();
   const toDoListKeys = Object.keys(toDoList);
   if (toDoListKeys.length > 0) {
