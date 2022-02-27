@@ -6,7 +6,6 @@ const {checkCookies} = require("../middleweres/cookies");
 const router = express.Router();
 
 router.use(cookieParser());
-router.use(express.json());
 router.use(checkCookies);
 
 
@@ -21,6 +20,9 @@ router.post("/", async (req, res) => {
   const taskId = uuidv4();
   const taskTitle = req.body;
   const toDoList = await ToDoModel.findById(userId).clone();
+  if (!toDoList){
+    await createNewUser(userId);
+  }
   toDoList.tasks[taskId] = taskTitle;
   await ToDoModel.findOneAndUpdate(
     { _id: userId },
@@ -56,4 +58,11 @@ router.delete("/:id", async (req, res) => {
   await ToDoModel.findByIdAndUpdate(userId, { $set: { tasks: tasksList.tasks } });
   res.sendStatus(200);
 });
+
+const createNewUser = async function(userId) {
+  const toDo = { _id: userId, tasks: {} };
+  const task = new ToDoModel(toDo);
+  await task.save();
+}
+
 module.exports = router;

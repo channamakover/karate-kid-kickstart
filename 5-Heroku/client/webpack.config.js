@@ -1,16 +1,17 @@
 const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
-module.exports = {
-  mode: "production",
+module.exports =(env)=> {
+  return {
+  mode: env.production ? "production" : "development",
   entry: "./toDoListApp.js",
   output: {
     filename: "main.js",
   },
-  devtool: "source-map",
+  devtool: env.production ? "source-map":"",
   devServer: {
     static: "dist",
-    port: 8080,
+    port: env.port || 8080,
     open: true,
   },
 
@@ -22,4 +23,5 @@ module.exports = {
       ],
     }),
   ],
+}
 };
