@@ -2,7 +2,7 @@ import { classes } from "./styles.js";
 import { getToDoList, addTask, editTask, deleteTask } from "./client.js";
 
 createAddTaskContainer();
-const toDoList = await getToDoList();
+const toDoList = getToDoList();
 const toDoListKeys = Object.keys(toDoList);
 if (toDoListKeys.length > 0) {
   toDoListKeys.forEach((key) => {

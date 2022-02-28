@@ -4,8 +4,8 @@
   "description": "",
   "main": "client.js",
   "scripts": {
-    "start": "npx webpack serve",
-    "build": "npx webpack"
+    "start": "npx webpack serve --env production",
+    "build": "npx webpack --env development"
   },
   "author": "",
   "license": "ISC",
