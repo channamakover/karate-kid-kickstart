@@ -1,8 +1,8 @@
-import express from "express";
+import * as express from "express";
 
 import toDoRouter from "./routes/todosRouter";
 import cors from "cors";
-import mongoose from "mongoose";
+import * as mongoose from "mongoose";
 
 const server = function (dburl) {
   let server: any;

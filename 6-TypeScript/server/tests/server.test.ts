@@ -1,5 +1,4 @@
 import testkitCreator from "./testkit"; 
-import appDriver from "./app-driver";
 
 const testkit = testkitCreator();
 describe("test server",() => {
