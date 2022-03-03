@@ -1,22 +1,38 @@
-import mongoose from "mongoose";
-import {MongoMemoryServer} from 'mongodb-memory-server'
-const mongoServer = new MongoMemoryServer();
-const beforeAndAfter =function(): Object {
+import * as mongoose from "mongoose";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import app from 'server.ts'
 
-  const beforAll = async function () :Promise<string>{
-    const uri = await mongoServer.getUri();
-    await mongoose.connect(uri);
-    return uri;
+const testkit =  () => {
+  const setup = async () => {
+    const mongoServer = await MongoMemoryServer.create();
+    const uri = mongoServer.getUri();
+    const fakeApp = app(dburl).start();
+    return {uri,mongoServer};
+  };
+  const drivers = ()=>{
+    appDriver = appDriver
+    return {appDriver,dbDriver}
+  }
+
+
+  const beforeAndAfter = function () {
+    beforeEach(async () => {
+      const {uri} = await setup();
+      mongoose.connect(uri);
+    });
+
+    afterEach(async() => {
+      const {mongoServer} = await setup();
+      mongoose.connection.dropDatabase();
+      mongoose.connection.close();
+      mongoServer.stop();
+    });
   };
 
-  const afterAll = async function () {
-    await mongoose.connection.dropDatabase();
-    await mongoose.connection.close();
-    await mongoServer.stop();
+
+  return {
+    beforeAndAfter,
   };
-return {beforAll,afterAll}
+};
 
-}
-export default beforeAndAfter;
-
-
+export default testkit;
