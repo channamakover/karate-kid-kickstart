@@ -7,7 +7,7 @@ const dbManager = function (url: string) {
   const connectToDb = function (): void {
     mongoose.connect(url);
   };
-  const getAllTodos = async function (id: string): Promise<any> {
+  const getAllTodos = async function (id: string): Promise<Todo> {
     try {
       const todosList = await ToDoModel.findById(id);
       if (!todosList) {

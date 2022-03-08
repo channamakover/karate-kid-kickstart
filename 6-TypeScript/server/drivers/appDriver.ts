@@ -14,7 +14,9 @@ const appDriver = function (baseURL: string) {
   const getToDoList = function (): Promise<Array<Todo>> {
     return axios
       .get(`${baseURL}/todos`)
-      .then((res) => {console.log(res.data);return res.data})
+      .then((res) => {
+        return res.data;
+      })
       .catch(errorHandler);
   };
   const getTasksById = function (userId: string): Promise<Todo> {
@@ -23,9 +25,12 @@ const appDriver = function (baseURL: string) {
       .then((res) => res.data)
       .catch(errorHandler);
   };
-  const addTask = function (taskTitle: string): Promise<number> {
+  const addTask = function (
+    userId: string,
+    taskTitle: string
+  ): Promise<number> {
     return axios
-      .post(`${baseURL}/todos`, { title: taskTitle })
+      .post(`${baseURL}/todos/${userId}`, { title: taskTitle })
       .then((res) => res.data)
       .catch(errorHandler);
   };
@@ -44,7 +49,7 @@ const appDriver = function (baseURL: string) {
   };
 
   const errorHandler = (err: string) => {
-    console.log("err", err);
+    throw new Error(err);
   };
 
   return { getToDoList, addTask, getTasksById, editTask, deleteTask };

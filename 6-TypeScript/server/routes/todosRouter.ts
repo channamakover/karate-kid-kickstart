@@ -1,5 +1,5 @@
 import * as express from "express";
-import { ToDoModel } from "../models";
+import { ToDoModel, Todo } from "../models";
 import checkCookies from "../middlewares/cookies";
 import * as cookieParser from "cookie-parser";
 import { Chance } from "chance";
@@ -11,13 +11,55 @@ toDoRouter.use(checkCookies);
 
 toDoRouter.get("/", async (req, res) => {
   const _id = req.body.userId;
-  const toDoList = await ToDoModel.findById(_id).clone();
-  res.send(toDoList);
+  try {
+    const toDoList = await ToDoModel.findById(_id).clone();
+    res.send(toDoList).status(200);
+  } catch (error) {
+    res.sendStatus(400);
+  }
 });
 toDoRouter.get("/:id", async (req, res) => {
   const _id = req.params.id;
-  const toDoList = await ToDoModel.findById(_id).clone();
-  res.send(toDoList);
+  try {
+    const toDoList = await ToDoModel.findById(_id).clone();
+    if (!toDoList) {
+      res.sendStatus(400);
+      return;
+    }
+    res.send(toDoList).status(200);
+  } catch (error) {
+    res.sendStatus(500);
+  }
 });
+toDoRouter.post("/:id", async (req, res) => {
+  const _id = req.params.id;
+  let toDoList: Todo;
+  let taskId : string
+
+  try {
+    toDoList = await ToDoModel.findById(_id).clone();
+    if (!toDoList) {
+      toDoList = await createNewUser(_id);
+    }
+    taskId = chance.guid();
+    toDoList.tasks[taskId] = req.body.title;
+  } catch (err) {
+    errorHandler(err);
+  }
+  try {
+    await ToDoModel.findByIdAndUpdate(_id, { $set: { tasks: toDoList.tasks } });
+    res.send(taskId).status(200);
+    
+  } catch (error) {
+    res.sendStatus(500);
+  }
+});
+const createNewUser = async function (userId: string): Promise<Todo> {
+  const newUser = new ToDoModel({ _id: userId, tasks: {} });
+  return await newUser.save();
+};
+const errorHandler = function (err: string) {
+  throw new Error(err);
+};
 
 export default toDoRouter;

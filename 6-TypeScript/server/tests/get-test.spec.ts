@@ -8,8 +8,14 @@ describe("test server", () => {
   testkit.beforeAndAfter();
 
   const { appdriver, dbdriver } = testkit.drivers();
-  it("should return an empty string", async () => {
-    expect(await appdriver.getToDoList()).toEqual("");
+  it("should return a status code of not found", async () => {
+    const fakeUserId = chance.guid();
+    try {
+      await appdriver.getTasksById(fakeUserId)
+      
+    } catch (error) {
+      expect(error.response.status).toEqual(400);
+    }
   });
   it("should return todo's list", async () => {
     const userId = chance.guid();
