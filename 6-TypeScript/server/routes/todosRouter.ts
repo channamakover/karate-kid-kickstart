@@ -34,7 +34,7 @@ toDoRouter.get("/:id", async (req, res) => {
 toDoRouter.post("/:id", async (req, res) => {
   const _id = req.params.id;
   let toDoList: Todo;
-  let taskId : string
+  let taskId: string;
 
   try {
     toDoList = await ToDoModel.findById(_id).clone();
@@ -49,11 +49,25 @@ toDoRouter.post("/:id", async (req, res) => {
   try {
     await ToDoModel.findByIdAndUpdate(_id, { $set: { tasks: toDoList.tasks } });
     res.send(taskId).status(200);
-    
   } catch (error) {
     res.sendStatus(500);
   }
 });
+toDoRouter.patch("/:id", async (req, res) => {
+  const userId = req.params.id;
+  const { id: taskId, title: newTitle } = req.body;
+  const tasksList = await ToDoModel.findById(userId).clone();
+  if (!tasksList.tasks[taskId]) {
+    res.sendStatus(404);
+    return;
+  }
+  tasksList.tasks[taskId] = newTitle;
+  await ToDoModel.findByIdAndUpdate(userId, {
+    $set: { tasks: tasksList.tasks },
+  });
+  res.sendStatus(200);
+});
+
 const createNewUser = async function (userId: string): Promise<Todo> {
   const newUser = new ToDoModel({ _id: userId, tasks: {} });
   return await newUser.save();

@@ -34,10 +34,13 @@ const appDriver = function (baseURL: string) {
       .then((res) => res.data)
       .catch(errorHandler);
   };
-  const editTask = function (taskInfo: TaskInfo): Promise<number> {
+  const editTask = function (
+    userId: string,
+    taskInfo: Partial<TaskInfo>
+  ): Promise<Todo> {
     const { id: taskId, title: newTitle } = taskInfo;
     return axios
-      .patch(`${baseURL}/todos/${taskId}`, { title: newTitle })
+      .patch(`${baseURL}/todos/${userId}`, { id: taskId, title: newTitle })
       .then((res) => res.data)
       .catch(errorHandler);
   };
