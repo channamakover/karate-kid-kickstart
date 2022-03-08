@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Todo } from "../models";
+axios.defaults.withCredentials = true;
 
 const appDriver = function (baseURL: string) {
   axios.defaults.withCredentials = true;
@@ -13,12 +14,12 @@ const appDriver = function (baseURL: string) {
   const getToDoList = function (): Promise<Array<Todo>> {
     return axios
       .get(`${baseURL}/todos`)
-      .then((res) => res.data)
+      .then((res) => {console.log(res.data);return res.data})
       .catch(errorHandler);
   };
-  const getTaskById = function (taskId: string): Promise<Todo> {
+  const getTasksById = function (userId: string): Promise<Todo> {
     return axios
-      .get(`${baseURL}/todos/${taskId}`)
+      .get(`${baseURL}/todos/${userId}`)
       .then((res) => res.data)
       .catch(errorHandler);
   };
@@ -43,9 +44,9 @@ const appDriver = function (baseURL: string) {
   };
 
   const errorHandler = (err: string) => {
-    console.log(err);
+    console.log("err", err);
   };
 
-  return { getToDoList, addTask, getTaskById, editTask, deleteTask };
+  return { getToDoList, addTask, getTasksById, editTask, deleteTask };
 };
 export default appDriver;

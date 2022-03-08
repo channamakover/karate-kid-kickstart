@@ -2,31 +2,43 @@ import * as mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import server from "../app";
 import appDriver from "../drivers/appDriver";
+import dbDriver from '../drivers/dbDriver'
 
 const testkit = () => {
+  let appServer;
+  let dbUri;
   const setup = async () => {
-    const mongoServer = await MongoMemoryServer.create();
-    const uri = mongoServer.getUri();
-    const fakeApp = server(uri).start();
-    return { uri, mongoServer, fakeApp };
+    try {
+      const mongoServer = await MongoMemoryServer.create();
+      dbUri = mongoServer.getUri();
+      appServer = await server(dbUri);
+      return { dbUri, mongoServer };
+    } catch (err) {
+      console.error(err);
+    }
   };
-  const drivers = async () => {
-    const { uri } = await setup();
-    const _appDriver = appDriver(uri);
-    return { _appDriver };
+  const drivers = () => {
+    const baseUrl = "http://localhost:3000";
+    const appdriver = appDriver(baseUrl);
+    const dbdriver = dbDriver(dbUri);
+    return { appdriver,dbdriver };
   };
 
   const beforeAndAfter = function () {
+    let mongoServer: MongoMemoryServer;
+
     beforeEach(async () => {
-      const { uri } = await setup();
-      mongoose.connect(uri);
+      const res = await setup();
+      mongoServer = res.mongoServer;
+      await mongoose.connect(res.dbUri);
+      appServer.start();
     });
 
     afterEach(async () => {
-      const { mongoServer } = await setup();
-      mongoose.connection.dropDatabase();
-      mongoose.connection.close();
+      await mongoose.connection.dropDatabase();
+      await mongoose.connection.close();
       mongoServer.stop();
+      appServer.close();
     });
   };
 

@@ -1,27 +1,25 @@
 import { ToDoModel, Todo } from "../models";
-import mongoose from "mongoose";
+import * as mongoose from "mongoose";
 import { Chance } from "chance";
 
-const dbManager = function (url: string): Object {
+const dbManager = function (url: string) {
   const chance = new Chance();
   const connectToDb = function (): void {
     mongoose.connect(url);
   };
-  const getAllTodos = async function (
-    id: string | number
-  ): Promise<any> {
+  const getAllTodos = async function (id: string): Promise<any> {
     try {
       const todosList = await ToDoModel.findById(id);
-      return todosList.tasks;
+      if (!todosList) {
+        return null;
+      }
+      return todosList;
     } catch (err) {
       throw new Error(err);
     }
   };
 
-  const getTodoById = async function (
-    id: string | number,
-    taskId: string | number
-  ): Promise<string> | undefined {
+  const getTodoById = async function (id: string, taskId: string) {
     if (!id || !taskId) {
       throw new Error("missing argument");
     }
@@ -29,26 +27,35 @@ const dbManager = function (url: string): Object {
       const data = await ToDoModel.findById(id).clone();
       return data.tasks[taskId];
     } catch (error) {
-        throw new Error(error);
+      throw new Error(error);
     }
   };
 
   const addTodo = async function (
-    id: string | number,
+    id: string,
     title: string
-  ): Promise<string | Todo> {
+  ): Promise<string> {
     if (!id) {
       return "there is no id";
     }
-    const toDoList = await getAllTodos(id);
     const taskId = chance.guid();
+    let toDoList = await getAllTodos(id);
+    if (!toDoList) {
+      toDoList = await createNewUser(id);
+    }
+
     toDoList.tasks[taskId] = title;
-    return await ToDoModel.findByIdAndUpdate(id, {
-      $set: { tasks: toDoList.tasks },
-    });
+    try {
+      await ToDoModel.findByIdAndUpdate(id, {
+        $set: { tasks: toDoList.tasks },
+      });
+      return taskId;
+    } catch (error) {
+      errorHandler(error);
+    }
   };
   const updateTodo = async function (
-    id: string | number,
+    id: string,
     taskId: string,
     title: string
   ): Promise<string> {
@@ -65,10 +72,7 @@ const dbManager = function (url: string): Object {
       return error;
     }
   };
-  const deleteTodo = async function (
-    id: string | number,
-    taskId: string | number
-  ) {
+  const deleteTodo = async function (id: string, taskId: string) {
     if (!id || !taskId) {
       throw new Error("missing argument");
     }
@@ -82,6 +86,20 @@ const dbManager = function (url: string): Object {
       throw new Error(error.message);
     }
   };
-  return { connectToDb, getAllTodos, getTodoById, addTodo, updateTodo, deleteTodo };
+  const createNewUser = async function (userId: string): Promise<Todo> {
+    const newUser = new ToDoModel({ _id: userId, tasks: {} });
+    return await newUser.save();
+  };
+  const errorHandler = function (err: Error) {
+    console.log(err);
+  };
+  return {
+    connectToDb,
+    getAllTodos,
+    getTodoById,
+    addTodo,
+    updateTodo,
+    deleteTodo,
+  };
 };
 export default dbManager;

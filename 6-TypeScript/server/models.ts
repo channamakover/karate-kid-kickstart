@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import * as mongoose from 'mongoose';
 
 const ToDoSchema = new mongoose.Schema({
   _id: {
@@ -7,6 +7,7 @@ const ToDoSchema = new mongoose.Schema({
   tasks: {
     type: Object,
   },
+
 });
 
 interface Todo {
