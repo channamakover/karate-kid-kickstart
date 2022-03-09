@@ -67,6 +67,20 @@ toDoRouter.patch("/:id", async (req, res) => {
   });
   res.sendStatus(200);
 });
+toDoRouter.delete("/:id", async (req, res) => {
+  const userId = req.params.id;
+  const taskId = req.body.id;
+  const tasksList = await ToDoModel.findById(userId).clone();
+  if (!tasksList || !tasksList.tasks[taskId]) {
+    res.sendStatus(204);
+    return;
+  }
+  delete tasksList.tasks[taskId];
+  await ToDoModel.findByIdAndUpdate(userId, {
+    $set: { tasks: tasksList.tasks },
+  });
+  res.sendStatus(200);
+});
 
 const createNewUser = async function (userId: string): Promise<Todo> {
   const newUser = new ToDoModel({ _id: userId, tasks: {} });

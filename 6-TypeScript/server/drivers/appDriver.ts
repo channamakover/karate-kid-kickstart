@@ -44,10 +44,13 @@ const appDriver = function (baseURL: string) {
       .then((res) => res.data)
       .catch(errorHandler);
   };
-  const deleteTask = function (taskId: string): Promise<number> {
+  const deleteTask = function (
+    userId: string,
+    taskId: string
+  ){
     return axios
-      .delete(`${baseURL}/todos/${taskId}`)
-      .then((res) => res.data)
+      .delete(`${baseURL}/todos/${userId}`, { data: { id: taskId } })
+      .then((res) => res.status)
       .catch(errorHandler);
   };
 
