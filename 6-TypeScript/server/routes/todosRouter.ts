@@ -1,16 +1,16 @@
 import * as express from "express";
-import { ToDoModel, Todo } from "../models";
-import checkCookies from "../middlewares/cookies";
+import { ToDoModel, Todos,UserTodos,Todo,TaskDescription } from "../models";
+import addCookie from "../middlewares/cookies";
 import * as cookieParser from "cookie-parser";
 import { Chance } from "chance";
 const chance = Chance();
 
 const toDoRouter = express();
 toDoRouter.use(cookieParser());
-toDoRouter.use(checkCookies);
+toDoRouter.use(addCookie);
 
 toDoRouter.get("/", async (req, res) => {
-  const _id = req.body.userId;
+  const _id = req.cookies.userId;
   try {
     const toDoList = await ToDoModel.findById(_id).clone();
     res.send(toDoList).status(200);
@@ -19,7 +19,7 @@ toDoRouter.get("/", async (req, res) => {
   }
 });
 toDoRouter.get("/:id", async (req, res) => {
-  const _id = req.params.id;
+  const _id = req.cookies.userId;
   try {
     const toDoList = await ToDoModel.findById(_id).clone();
     if (!toDoList) {
@@ -31,9 +31,10 @@ toDoRouter.get("/:id", async (req, res) => {
     res.sendStatus(500);
   }
 });
-toDoRouter.post("/:id", async (req, res) => {
-  const _id = req.params.id;
-  let toDoList: Todo;
+toDoRouter.post("/", async (req, res) => {
+  const _id = req.cookies.userId;
+
+  let toDoList: UserTodos;
   let taskId: string;
 
   try {
@@ -42,47 +43,48 @@ toDoRouter.post("/:id", async (req, res) => {
       toDoList = await createNewUser(_id);
     }
     taskId = chance.guid();
-    toDoList.tasks[taskId] = req.body.title;
+    toDoList[_id][taskId].title = req.body.title;
   } catch (err) {
     errorHandler(err);
   }
   try {
-    await ToDoModel.findByIdAndUpdate(_id, { $set: { tasks: toDoList.tasks } });
+    await ToDoModel.findByIdAndUpdate(_id, { $set: { tasks: toDoList } });
     res.send(taskId).status(200);
   } catch (error) {
     res.sendStatus(500);
   }
 });
-toDoRouter.patch("/:id", async (req, res) => {
-  const userId = req.params.id;
-  const { id: taskId, title: newTitle } = req.body;
+toDoRouter.put("/:id", async (req, res) => {
+  const userId = req.cookies.userId;
+  const taskId = req.params.id;
+  const newTitle = req.body.title;
   const tasksList = await ToDoModel.findById(userId).clone();
-  if (!tasksList.tasks[taskId]) {
+  if (!tasksList[taskId]) {
     res.sendStatus(404);
     return;
   }
-  tasksList.tasks[taskId] = newTitle;
+  tasksList[taskId] = newTitle;
   await ToDoModel.findByIdAndUpdate(userId, {
-    $set: { tasks: tasksList.tasks },
+    $set: { tasks: tasksList },
   });
   res.sendStatus(200);
 });
 toDoRouter.delete("/:id", async (req, res) => {
-  const userId = req.params.id;
-  const taskId = req.body.id;
+  const userId = req.cookies.userId;
+  const taskId = req.params.id;
   const tasksList = await ToDoModel.findById(userId).clone();
-  if (!tasksList || !tasksList.tasks[taskId]) {
+  if (!tasksList || !tasksList[taskId]) {
     res.sendStatus(204);
     return;
   }
-  delete tasksList.tasks[taskId];
+  delete tasksList[taskId];
   await ToDoModel.findByIdAndUpdate(userId, {
-    $set: { tasks: tasksList.tasks },
+    $set: { tasks: tasksList},
   });
   res.sendStatus(200);
 });
 
-const createNewUser = async function (userId: string): Promise<Todo> {
+const createNewUser = async function (userId: string): Promise<UserTodos> {
   const newUser = new ToDoModel({ _id: userId, tasks: {} });
   return await newUser.save();
 };

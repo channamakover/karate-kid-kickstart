@@ -1,4 +1,4 @@
-import { ToDoModel, Todo } from "../models";
+import { ToDoModel, Todo, UserTodos, Todos, TaskDescription } from "../models";
 import * as mongoose from "mongoose";
 import { Chance } from "chance";
 
@@ -7,9 +7,9 @@ const dbManager = function (url: string) {
   const connectToDb = function (): void {
     mongoose.connect(url);
   };
-  const getAllTodos = async function (id: string): Promise<Todo> {
+  const getAllTodos = async function (id: string): Promise<UserTodos> {
     try {
-      const todosList = await ToDoModel.findById(id);
+      const todosList = await ToDoModel.findById(id).clone();
       if (!todosList) {
         return null;
       }
@@ -19,7 +19,10 @@ const dbManager = function (url: string) {
     }
   };
 
-  const getTodoById = async function (id: string, taskId: string) {
+  const getTodoById = async function (
+    id: string,
+    taskId: string
+  ): Promise<TaskDescription> {
     if (!id || !taskId) {
       throw new Error("missing argument");
     }
@@ -33,18 +36,17 @@ const dbManager = function (url: string) {
 
   const addTodo = async function (
     id: string,
-    title: string
+    newTitle: string
   ): Promise<string> {
     if (!id) {
       return "there is no id";
     }
     const taskId = chance.guid();
-    let toDoList = await getAllTodos(id);
+    let toDoList: UserTodos = await getAllTodos(id);
     if (!toDoList) {
       toDoList = await createNewUser(id);
     }
-
-    toDoList.tasks[taskId] = title;
+    toDoList.tasks[taskId] = { title: newTitle, isChecked: false };
     try {
       await ToDoModel.findByIdAndUpdate(id, {
         $set: { tasks: toDoList.tasks },
@@ -62,11 +64,11 @@ const dbManager = function (url: string) {
     if (!id || !taskId || !title) {
       return "there is missing argument";
     }
-    const toDoList: Todo = await ToDoModel.findById(id).clone();
+    const toDoList: UserTodos = await ToDoModel.findById(id).clone();
     try {
-      toDoList.tasks[taskId] = title;
+      toDoList.tasks[taskId].title = title;
       await ToDoModel.findByIdAndUpdate(id, {
-        $set: { tasks: toDoList.tasks },
+        $set: { tasks: toDoList },
       });
     } catch (error) {
       return error;
@@ -78,15 +80,15 @@ const dbManager = function (url: string) {
     }
     const toDoList = await ToDoModel.findById(id).clone();
     try {
-      delete toDoList.tasks[taskId];
+      delete toDoList[taskId];
       await ToDoModel.findByIdAndUpdate(id, {
-        $set: { tasks: toDoList.tasks },
+        $set: { tasks: toDoList },
       });
     } catch (error) {
       throw new Error(error.message);
     }
   };
-  const createNewUser = async function (userId: string): Promise<Todo> {
+  const createNewUser = async function (userId: string): Promise<UserTodos> {
     const newUser = new ToDoModel({ _id: userId, tasks: {} });
     return await newUser.save();
   };

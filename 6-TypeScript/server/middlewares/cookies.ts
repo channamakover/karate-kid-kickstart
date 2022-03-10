@@ -1,11 +1,12 @@
-import { v1 as uuidv1 } from "uuid";
+import { Chance } from "chance";
+import { Request, Response } from "express";
 
-const checkCookies = function (req, res, next) {
-  if (!req.cookies.userId) {
-    const userId = uuidv1();
-    req.body.userId = userId;
+const addCookie = function (req: Request, res: Response, next) {
+  let userIdCookie = req.cookies.userId;
+  if (!userIdCookie) {
+    userIdCookie = Chance().guid();
+    res.cookie("userId", userIdCookie);
   }
   next();
 };
-
-export default checkCookies;
+export default addCookie;

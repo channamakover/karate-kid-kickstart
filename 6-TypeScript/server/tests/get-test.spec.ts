@@ -9,23 +9,27 @@ describe("test server", () => {
 
   const { appdriver, dbdriver } = testkit.drivers();
   it("should return a status code of not found", async () => {
-    const fakeUserId = chance.guid();
+    const fakeTaskId = chance.guid();
     try {
-      await appdriver.getTasksById(fakeUserId)
-      
+      await appdriver.getTaskById(fakeTaskId);
     } catch (error) {
       expect(error.response.status).toEqual(400);
     }
   });
   it("should return todo's list", async () => {
     const userId = chance.guid();
-    let todoId:string;
+    let todoId: string;
     try {
       todoId = await dbdriver.addTodo(userId, "FINISH");
-      
     } catch (error) {
       console.log(error);
     }
-    expect((await (await appdriver.getTasksById(userId)).tasks[todoId])).toEqual("FINISH");
+    try {
+      appdriver.setUserCookie(userId);
+      const toDoList = await appdriver.getAll();
+      expect(toDoList.tasks[todoId].title).toEqual("FINISH");
+    } catch (error) {
+      console.log(error);
+    }
   });
 });
