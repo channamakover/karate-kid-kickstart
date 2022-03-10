@@ -15,8 +15,14 @@ describe("testing update", () => {
     const taskId = await dbdriver.addTodo(userId, taskTitle);
 
     try {
-      task = await appdriver.editTask(userId,{ id: taskId, title: newTitle });
-      expect(task.tasks[taskId]).toEqual(newTitle);
+      appdriver.setUserCookie(userId);
+      await appdriver.editTask(taskId, newTitle);
+    } catch (error) {
+      console.log(error);
+    }
+    try {
+      const toDoList = await dbdriver.getTodoById(userId, taskId);
+      expect(toDoList.title).toEqual(newTitle);
     } catch (error) {
       console.log(error);
     }
@@ -25,14 +31,15 @@ describe("testing update", () => {
     const taskTitle = "go to work";
     const newTitle = "go home!";
     const userId = chance.guid();
-    const fakeTaksId = chance.guid();
+    const fakeTaskId = chance.guid();
     let task: Todo;
     const taskId = await dbdriver.addTodo(userId, taskTitle);
     try {
-      task = await appdriver.editTask(userId,{ id: taskId, title: newTitle });
+      appdriver.setUserCookie(userId);
+      task = await appdriver.editTask(fakeTaskId, newTitle);
     } catch (error) {
-        console.log(error);
-        expect(error.response.status).toEqual(404);
+      console.log(error);
+      expect(error.response.status).toEqual(404);
     }
   });
 });

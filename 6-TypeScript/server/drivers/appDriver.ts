@@ -24,7 +24,7 @@ const appDriver = function (baseURL: string) {
       .then((res) => res.data)
       .catch(errorHandler);
   };
-  const addTask = function (taskTitle: string): Promise<number> {
+  const addTask = function (taskTitle: string): Promise<string> {
     return axios
       .post(`${baseURL}/todos`, { title: taskTitle }, headersManager())
       .then((res) => res.data)
@@ -32,7 +32,7 @@ const appDriver = function (baseURL: string) {
   };
   const editTask = function (taskId: string, title: string): Promise<Todo> {
     return axios
-      .put(`${baseURL}/todos/${taskId}`, { title: title })
+      .put(`${baseURL}/todos/${taskId}`, { title: title }, headersManager())
       .then((res) => res.data)
       .catch(errorHandler);
   };

@@ -11,7 +11,8 @@ describe("test delete functionality", () => {
     const title = "do something";
     const taskId = await dbdriver.addTodo(userId, title);
     try {
-      const res = await appdriver.deleteTask(userId, taskId);
+      appdriver.setUserCookie(userId);
+      const res = await appdriver.deleteTask(taskId);
       expect(res).toEqual(200);
     } catch (error) {
       console.log("error", error);
@@ -21,7 +22,8 @@ describe("test delete functionality", () => {
       const userId = chance.guid();
       const taskId = chance.guid();
       try {
-          const res = await appdriver.deleteTask(userId, taskId);
+          appdriver.setUserCookie(userId);
+          const res = await appdriver.deleteTask(taskId);
           expect(res).toEqual(204);
       } catch (error) {
           
