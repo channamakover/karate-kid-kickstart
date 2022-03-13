@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Todo, TaskDescription } from "../models";
+import { TaskDescription, UserTodos } from "../models";
 axios.defaults.withCredentials = true;
 
 const appDriver = function (baseURL: string) {
@@ -10,7 +10,7 @@ const appDriver = function (baseURL: string) {
     _id = userId;
   };
 
-  const getAll = function (): Promise<Todo> {
+  const getAll = function (): Promise<UserTodos> {
     return axios
       .get(`${baseURL}/todos`, headersManager())
       .then((res) => {
@@ -18,7 +18,7 @@ const appDriver = function (baseURL: string) {
       })
       .catch(errorHandler);
   };
-  const getTaskById = function (taskId: string): Promise<Todo> {
+  const getTaskById = function (taskId: string): Promise<UserTodos> {
     return axios
       .get(`${baseURL}/todos/${taskId}`, headersManager())
       .then((res) => res.data)
@@ -30,13 +30,13 @@ const appDriver = function (baseURL: string) {
       .then((res) => res.data)
       .catch(errorHandler);
   };
-  const editTask = function (taskId: string, title: string): Promise<Todo> {
+  const editTask = function (taskId: string, title: string): Promise<string> {
     return axios
       .put(`${baseURL}/todos/${taskId}`, { title: title }, headersManager())
       .then((res) => res.data)
       .catch(errorHandler);
   };
-  const deleteTask = function (taskId: string) {
+  const deleteTask = function (taskId: string) :Promise<string|number> {
     return axios
       .delete(`${baseURL}/todos/${taskId}`, headersManager())
       .then((res) => res.status)

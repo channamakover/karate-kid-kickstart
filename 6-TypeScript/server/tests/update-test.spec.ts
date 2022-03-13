@@ -1,6 +1,6 @@
 import testkitCreator from "./testkit";
 import { Chance } from "chance";
-import { Todo } from "../models";
+import { UserTodos } from "../models";
 const testkit = testkitCreator();
 const chance = Chance();
 describe("testing update", () => {
@@ -11,7 +11,7 @@ describe("testing update", () => {
     const taskTitle = "go to work";
     const newTitle = "go home!";
     const userId = chance.guid();
-    let task: Todo;
+    let task: UserTodos;
     const taskId = await dbdriver.addTodo(userId, taskTitle);
 
     try {
@@ -32,11 +32,10 @@ describe("testing update", () => {
     const newTitle = "go home!";
     const userId = chance.guid();
     const fakeTaskId = chance.guid();
-    let task: Todo;
     const taskId = await dbdriver.addTodo(userId, taskTitle);
     try {
       appdriver.setUserCookie(userId);
-      task = await appdriver.editTask(fakeTaskId, newTitle);
+      await appdriver.editTask(fakeTaskId, newTitle);
     } catch (error) {
       console.log(error);
       expect(error.response.status).toEqual(404);

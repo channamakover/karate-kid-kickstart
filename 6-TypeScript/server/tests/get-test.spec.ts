@@ -18,15 +18,17 @@ describe("test server", () => {
   });
   it("should return todo's list", async () => {
     const userId = chance.guid();
-    let todoId: string;
+    let todoId: string,todoId2:string;
     try {
       todoId = await dbdriver.addTodo(userId, "FINISH");
+      todoId2 = await dbdriver.addTodo(userId, "checking PR");
     } catch (error) {
       console.log(error);
     }
     try {
       appdriver.setUserCookie(userId);
       const toDoList = await appdriver.getAll();
+      console.log("todolist in get test:", toDoList);
       expect(toDoList.tasks[todoId].title).toEqual("FINISH");
     } catch (error) {
       console.log(error);

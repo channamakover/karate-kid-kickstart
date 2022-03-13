@@ -1,5 +1,5 @@
 import * as express from "express";
-import { ToDoModel, Todos, UserTodos, Todo, TaskDescription } from "../models";
+import { ToDoModel,  UserTodos,  TaskDescription } from "../models";
 import addCookie from "../middlewares/cookies";
 import * as cookieParser from "cookie-parser";
 import { Chance } from "chance";
@@ -48,7 +48,7 @@ toDoRouter.post("/", async (req, res) => {
     errorHandler(err);
   }
   try {
-    await ToDoModel.findByIdAndUpdate(_id, { $set: { tasks: toDoList } });
+    await ToDoModel.findByIdAndUpdate(_id, { $set: { tasks: toDoList.tasks } });
     res.send(taskId).status(200);
   } catch (error) {
     res.sendStatus(500);

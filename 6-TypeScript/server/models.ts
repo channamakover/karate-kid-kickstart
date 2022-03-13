@@ -7,25 +7,15 @@ const ToDoSchema = new mongoose.Schema({
   tasks: {
     type: Object,
   },
-
-
 });
 type TaskDescription = {
-  title:string,
-  isChecked:boolean,
-}
-
-type Todo = {
-  [todoId: string]: TaskDescription
-}
-
+  title: string;
+  isChecked: boolean;
+};
 type UserTodos = {
-  [userId in string]: TaskDescription
-}
-interface Todos {
-  mainObject: UserTodos
-}
+  [userId in string]: TaskDescription;
+};
 
 const ToDoModel = mongoose.model<UserTodos>("ToDo", ToDoSchema);
 
-export { ToDoModel, Todos,UserTodos,Todo,TaskDescription };
+export { ToDoModel, UserTodos, TaskDescription };

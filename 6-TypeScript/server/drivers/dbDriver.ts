@@ -1,4 +1,4 @@
-import { ToDoModel, Todo, UserTodos, Todos, TaskDescription } from "../models";
+import { ToDoModel, UserTodos, TaskDescription } from "../models";
 import * as mongoose from "mongoose";
 import { Chance } from "chance";
 
