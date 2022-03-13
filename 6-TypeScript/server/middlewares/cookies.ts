@@ -1,8 +1,8 @@
 import { Chance } from "chance";
 import { Request, Response } from "express";
 
-const addCookie = function (req: Request, res: Response, next) {
-  let userIdCookie = req.cookies.userId;
+const addCookie = function (req: Request, res: Response, next: () => void) {
+  let userIdCookie: string = req.cookies.userId;
   if (!userIdCookie) {
     userIdCookie = Chance().guid();
     req.cookies.userId = userIdCookie;

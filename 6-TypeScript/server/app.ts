@@ -2,10 +2,10 @@ import toDoRouter from "./routes/todosRouter";
 import * as express from "express";
 import * as cors from "cors";
 import * as mongoose from "mongoose";
-import checkCookies from './middlewares/cookies'
+import { Server } from "http";
 
-const server = async function (dburl) {
-  let server;
+const server = async function (dburl: string) {
+  let server: Server;
 
   const db = mongoose.connection;
   if (!db) {
@@ -17,15 +17,14 @@ const server = async function (dburl) {
   const app = express();
 
   app.use(cors({ credentials: true, origin: "http://localhost:8080" }));
-  app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
   app.use("/todos", toDoRouter);
 
-  const start = function () {
+  const start = function (): void {
     server = app.listen(3000);
   };
 
-  const close = () => {
+  const close = (): void => {
     server.close();
   };
   return { start, close };

@@ -1,29 +1,30 @@
 import { Request, Response } from "express";
-import { ToDoModel, UserTodos } from "../models";
+import { TaskDescription, ToDoModel, UserTodos } from "../models";
 import { Chance } from "chance";
 
-const getAll = async function (req: Request, res: Response) {
-  const _id = req.cookies.userId;
+const getAll = async function (req: Request, res: Response<UserTodos>) {
+  const _id: string = req.cookies.userId;
   if (!_id) {
     errorHandler("userId is missing");
     return;
   }
   try {
-    const toDoList = await ToDoModel.findById(_id).clone();
+    const toDoList: UserTodos = await ToDoModel.findById(_id).clone();
     res.send(toDoList).status(200);
   } catch (error) {
     res.sendStatus(400);
   }
 };
-const getById = async function (req: Request, res: Response) {
-  const _id = req.cookies.userId;
+const getTaskById = async function (req: Request<string>, res: Response<UserTodos>) {
+  const _id: string = req.cookies.userId;
+  const taskId :string = req.body.id;
   if (!_id) {
     errorHandler("userId is missing");
     return;
   }
   try {
-    const toDoList = await ToDoModel.findById(_id).clone();
-    if (!toDoList) {
+    const toDoList: UserTodos = await ToDoModel.findById(_id).clone();
+    if (!toDoList || !toDoList.tasks[taskId]) {
       res.sendStatus(400);
       return;
     }
@@ -32,8 +33,8 @@ const getById = async function (req: Request, res: Response) {
     res.sendStatus(500);
   }
 };
-const addNewTask = async function (req: Request, res: Response) {
-  const _id = req.cookies.userId;
+const addNewTask = async function (req: Request<TaskDescription>, res: Response<String>) {
+  const _id: string = req.cookies.userId;
   if (!_id) {
     errorHandler("userId is missing");
     return;
@@ -59,10 +60,10 @@ const addNewTask = async function (req: Request, res: Response) {
     res.sendStatus(500);
   }
 };
-const updateTask = async function (req: Request, res: Response) {
-  const userId = req.cookies.userId;
-  const taskId = req.params.id;
-  const newTitle = req.body.title;
+const updateTask = async function (req: Request, res: Response<string>) {
+  const userId:string = req.cookies.userId;
+  const taskId:string = req.params.id;
+  const newTitle:string = req.body.title;
   if (!userId || !taskId) {
     errorHandler("missing arguments");
     return;
@@ -78,14 +79,14 @@ const updateTask = async function (req: Request, res: Response) {
   });
   res.sendStatus(200);
 };
-const deleteTask = async function (req: Request, res: Response) {
-  const userId = req.cookies.userId;
-  const taskId = req.params.id;
+const deleteTask = async function (req: Request, res: Response<string>) {
+  const userId:string = req.cookies.userId;
+  const taskId:string = req.params.id;
   if (!userId || !taskId) {
     errorHandler("arguments are missing");
     return;
   }
-  const tasksList = await ToDoModel.findById(userId).clone();
+  const tasksList:UserTodos = await ToDoModel.findById(userId).clone();
   if (!tasksList || !tasksList.tasks[taskId]) {
     res.sendStatus(204);
     return;
@@ -110,4 +111,4 @@ const errorHandler = function (err: string) {
   throw new Error(err);
 };
 
-export default { getAll, getById, addNewTask, updateTask, deleteTask };
+export default { getAll, getTaskById, addNewTask, updateTask, deleteTask };

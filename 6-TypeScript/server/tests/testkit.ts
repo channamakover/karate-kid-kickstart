@@ -5,8 +5,8 @@ import appDriver from "../drivers/appDriver";
 import dbDriver from '../drivers/dbDriver'
 
 const testkit = () => {
-  let appServer;
-  let dbUri;
+  let appServer: { start: any; close: any; };
+  let dbUri: string;
   const setup = async () => {
     try {
       const mongoServer = await MongoMemoryServer.create();

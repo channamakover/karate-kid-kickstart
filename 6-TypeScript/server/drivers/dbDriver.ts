@@ -68,7 +68,7 @@ const dbManager = function (url: string) {
     try {
       toDoList.tasks[taskId].title = title;
       await ToDoModel.findByIdAndUpdate(id, {
-        $set: { tasks: toDoList },
+        $set: { tasks: toDoList.tasks },
       });
     } catch (error) {
       return error;
@@ -78,11 +78,11 @@ const dbManager = function (url: string) {
     if (!id || !taskId) {
       throw new Error("missing argument");
     }
-    const toDoList = await ToDoModel.findById(id).clone();
+    const toDoList: UserTodos = await ToDoModel.findById(id).clone();
     try {
-      delete toDoList[taskId];
+      delete toDoList.tasks[taskId];
       await ToDoModel.findByIdAndUpdate(id, {
-        $set: { tasks: toDoList },
+        $set: { tasks: toDoList.tasks },
       });
     } catch (error) {
       throw new Error(error.message);
@@ -90,10 +90,14 @@ const dbManager = function (url: string) {
   };
   const createNewUser = async function (userId: string): Promise<UserTodos> {
     const newUser = new ToDoModel({ _id: userId, tasks: {} });
-    return await newUser.save();
+    try {
+      return await newUser.save();
+    } catch (error) {
+      errorHandler(error);
+    }
   };
   const errorHandler = function (err: Error) {
-    console.log(err);
+    throw err;
   };
   return {
     connectToDb,

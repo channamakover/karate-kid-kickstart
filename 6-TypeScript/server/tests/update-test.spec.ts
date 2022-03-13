@@ -1,18 +1,18 @@
 import testkitCreator from "./testkit";
 import { Chance } from "chance";
-import { UserTodos } from "../models";
-const testkit = testkitCreator();
-const chance = Chance();
+import { TaskDescription, UserTodos } from "../models";
 describe("testing update", () => {
+  const testkit = testkitCreator();
+  const chance = Chance();
   testkit.beforeAndAfter();
   const { appdriver, dbdriver } = testkit.drivers();
 
   it("should...", async () => {
-    const taskTitle = "go to work";
-    const newTitle = "go home!";
-    const userId = chance.guid();
+    const taskTitle: string = "go to work";
+    const newTitle: string = "go home!";
+    const userId: string = chance.guid();
     let task: UserTodos;
-    const taskId = await dbdriver.addTodo(userId, taskTitle);
+    const taskId: string = await dbdriver.addTodo(userId, taskTitle);
 
     try {
       appdriver.setUserCookie(userId);
@@ -21,18 +21,21 @@ describe("testing update", () => {
       console.log(error);
     }
     try {
-      const toDoList = await dbdriver.getTodoById(userId, taskId);
+      const toDoList: TaskDescription = await dbdriver.getTodoById(
+        userId,
+        taskId
+      );
       expect(toDoList.title).toEqual(newTitle);
     } catch (error) {
       console.log(error);
     }
   });
   it("should fail", async () => {
-    const taskTitle = "go to work";
-    const newTitle = "go home!";
-    const userId = chance.guid();
-    const fakeTaskId = chance.guid();
-    const taskId = await dbdriver.addTodo(userId, taskTitle);
+    const taskTitle: string = "go to work";
+    const newTitle: string = "go home!";
+    const userId: string = chance.guid();
+    const fakeTaskId: string = chance.guid();
+    const taskId: string = await dbdriver.addTodo(userId, taskTitle);
     try {
       appdriver.setUserCookie(userId);
       await appdriver.editTask(fakeTaskId, newTitle);

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { TaskDescription, UserTodos } from "../models";
+import {  UserTodos } from "../models";
 axios.defaults.withCredentials = true;
 
 const appDriver = function (baseURL: string) {

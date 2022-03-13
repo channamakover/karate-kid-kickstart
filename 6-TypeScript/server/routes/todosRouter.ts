@@ -8,7 +8,7 @@ toDoRouter.use(cookieParser());
 toDoRouter.use(addCookie);
 
 toDoRouter.get("/", todoController.getAll)
-toDoRouter.get("/:id", todoController.getById)
+toDoRouter.get("/:id", todoController.getTaskById)
 toDoRouter.post("/", todoController.addNewTask);
 toDoRouter.put("/:id", todoController.updateTask);
 toDoRouter.delete("/:id", todoController.deleteTask);
