@@ -1,0 +1,14 @@
+@mixin everythingIs($color) {
+    color:$color;
+    background:$color;
+    
+}
+
+.item {
+    @include everythingIs(blue);
+    color:red;
+
+    &--active {
+        color:blue;
+    }
+}
