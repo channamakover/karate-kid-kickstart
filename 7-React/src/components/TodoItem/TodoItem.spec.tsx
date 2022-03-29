@@ -26,19 +26,23 @@ describe("Todo Item ", () => {
   });
   test("should call 'removeTodo' when clicking on the delete button", () => {
     driver.when.render();
-    driver.then.deleteBtn().deleteTaskClick();
+    driver.when.clickDelete();
     expect(driver.then.deleteTask()).toHaveBeenCalled();
   });
   test("should call editText when clicking on edit button", () => {
     driver.when.render();
-    driver.then.editBtn().editBtnClick();
+    driver.when.clickEdit();
     expect(driver.then.editTask()).toHaveBeenCalled();
   })
   test("should display cross line on the text when clicking the checkbox", () => {
     driver.when.render();
-    driver.then.checkBoxBtn().markAsDone();
+    driver.when.markTaskAsDone();
     expect(driver.then.checkBoxBtn().hasCrossLine()).toEqual(true);
   });
-  test("should display the new title when clicking on the edit button or pressing enter after editing", () => {});
-  test("should remove cross line when clicking on the checkbox", () => {});
+  test("should remove cross line when clicking on the checkbox", () => {
+    driver.when.render();
+    driver.when.markTaskAsDone();
+    driver.when.unMarkTaskAsDone();
+    expect(driver.then.checkBoxBtn().hasCrossLine()).toEqual(false)
+  });
 });

@@ -1,19 +1,26 @@
-import React from "react";
+import React,{useState} from "react";
 import classes from "./TodoItem.module.css";
 import dataHooks from "./data-hooks";
 
 const TodoItem = ({
   title,
   deleteTaskHandler,
-  editTaskHandler,
+    editTaskHandler,
 }: {
   title: string;
   deleteTaskHandler: () => {};
-  editTaskHandler: () => {};
-}) => {
+        editTaskHandler: () => {};
+  
+    }) => {
+    
+    const [isDone, setIsDone] = useState(false);
+    const toggleHandler = () => {
+        setIsDone(prevState => !prevState);
+        
+    }
   return (
     <li data-hook={dataHooks.root} className={classes["to-do-tasks"]}>
-      <input data-hook={dataHooks.checkbox} type="checkbox" />
+          <input data-hook={dataHooks.checkbox} type="checkbox" onClick={toggleHandler} className={isDone? classes['done-task']:'' }/>
       <h3 data-hook={dataHooks.title}>{title}</h3>
       <div className={classes["buttons-wrapper"]}>
         <button

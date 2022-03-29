@@ -11,16 +11,16 @@ class TodoItemDriver {
   private toggleDone: jest.Mock = jest.fn();
 
   private editBtn = () => {
-    const element = this.wrapper?.queryByTestId(dataHooks.editBtn)
+    const element = this.wrapper?.queryByTestId(dataHooks.editBtn);
     return {
       editBtnExists: () => {
         return element ? true : false;
       },
       editBtnClick: () => {
         if (element) {
-          fireEvent.click(element)
+          fireEvent.click(element);
         }
-      }
+      },
     };
   };
   private deleteBtn = () => {
@@ -45,20 +45,26 @@ class TodoItemDriver {
     };
   };
   private checkBoxBtn = () => {
-    const element = this.wrapper?.queryByTestId(dataHooks.checkbox)
+    const element = this.wrapper?.queryByTestId(dataHooks.checkbox);
+    const clickCheckBox = () => {
+      if (element) {
+        fireEvent.click(element);
+      }
+      
+    }
     return {
       checkBoxBtnExists: () => {
         return element ? true : false;
       },
       markAsDone: () => {
-        
+        clickCheckBox()
       },
       unMarkAsDone: () => {
-        
+        clickCheckBox();
       },
       hasCrossLine: () => {
-        
-      }
+        return element?.classList.contains('done-task');
+      },
     };
   };
 
@@ -77,6 +83,10 @@ class TodoItemDriver {
         />
       );
     },
+    clickEdit: () => this.editBtn().editBtnClick(),
+    clickDelete: () => this.deleteBtn().deleteTaskClick(),
+    markTaskAsDone: () => this.checkBoxBtn().markAsDone(),
+    unMarkTaskAsDone: () => this.checkBoxBtn().unMarkAsDone(),
   };
   then = {
     editBtn: this.editBtn,
