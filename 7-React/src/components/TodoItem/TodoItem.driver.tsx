@@ -1,11 +1,12 @@
 import TodoItem from "./TodoItem";
-import { render, RenderResult } from "@testing-library/react";
+import { fireEvent, render, RenderResult } from "@testing-library/react";
 import dataHooks from "./data-hooks";
 import React from "react";
 
 class TodoItemDriver {
   private wrapper?: RenderResult;
   private todoDescription: string = "";
+  private deleteTaskMock: jest.Mock = jest.fn();
   private editTextMock: jest.Mock = jest.fn();
   private markAsDoneMock: jest.Mock = jest.fn();
 
@@ -21,6 +22,11 @@ class TodoItemDriver {
     return {
       deleteBtnExists: () => {
         return element ? true : false;
+      },
+      deleteTaskClick: () => {
+        if (element) {
+          fireEvent.click(element);
+        }
       },
     };
   };
@@ -41,18 +47,26 @@ class TodoItemDriver {
   };
 
   given = {
-    name: (name: string) => {this.todoDescription = name},
+    name: (name: string) => {
+      this.todoDescription = name;
+    },
   };
   when = {
     render: () => {
-      this.wrapper = render(<TodoItem title={this.todoDescription} />);
+      this.wrapper = render(
+        <TodoItem
+          title={this.todoDescription}
+          deleteTaskHandler={this.deleteTaskMock}
+        />
+      );
     },
   };
   then = {
     editBtn: this.editBtn,
     deleteBtn: this.deleteBtn,
     taskTitle: this.taskTitle,
-    checkBoxBtn :this.checkBoxBtn
+    checkBoxBtn: this.checkBoxBtn,
+    deleteTask: () => this.deleteTaskMock,
   };
 }
 

@@ -23,10 +23,12 @@ describe("Todo Item ", () => {
     driver.when.render();
     const title = driver.then.taskTitle();
     expect(title.getTitle()).toEqual(taskTitle);
-
   });
-  test("should display input box when clicking on edit button", () => {});
-  test("should call 'removeTodo' when clicking on the delete button", () => {});
+  test("should call 'removeTodo' when clicking on the delete button", () => {
+    driver.when.render();
+    driver.then.deleteBtn().deleteTaskClick();
+    expect(driver.then.deleteTask()).toHaveBeenCalled();
+  });
   test("should display cross line on the text when clicking the checkbox", () => {});
   test("should display the new title when clicking on the edit button or pressing enter after editing", () => {});
   test("should remove cross line when clicking on the checkbox", () => {});

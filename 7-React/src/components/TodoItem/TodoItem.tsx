@@ -2,7 +2,13 @@ import React from "react";
 import classes from "./TodoItem.module.css";
 import dataHooks from "./data-hooks";
 
-const TodoItem = ({ title }: { title: string }) => {
+const TodoItem = ({
+  title,
+  deleteTaskHandler,
+}: {
+  title: string;
+  deleteTaskHandler: () => {};
+}) => {
   return (
     <li data-hook={dataHooks.root} className={classes["to-do-tasks"]}>
       <input data-hook={dataHooks.checkbox} type="checkbox" />
@@ -17,6 +23,7 @@ const TodoItem = ({ title }: { title: string }) => {
         <button
           data-hook={dataHooks.deleteBtn}
           className={classes["button-style"]}
+          onClick={deleteTaskHandler}
         >
           delete
         </button>
