@@ -5,9 +5,11 @@ import dataHooks from "./data-hooks";
 const TodoItem = ({
   title,
   deleteTaskHandler,
+  editTaskHandler,
 }: {
   title: string;
   deleteTaskHandler: () => {};
+  editTaskHandler: () => {};
 }) => {
   return (
     <li data-hook={dataHooks.root} className={classes["to-do-tasks"]}>
@@ -17,6 +19,7 @@ const TodoItem = ({
         <button
           data-hook={dataHooks.editBtn}
           className={classes["button-style"]}
+          onClick={editTaskHandler}
         />
         edit
         <button />
