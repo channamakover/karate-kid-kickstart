@@ -1,0 +1,41 @@
+/*!***********************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/components/TodoItem/TodoItem.module.css ***!
+  \***********************************************************************************************/
+.QsyNd2yjU8CUMQwsd40A {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    list-style-type: none;
+    border: 1px solid;
+    width: 50px;
+    height: 70px;
+    border-radius: 40px;
+    width: 50%;
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+  .sHFZ0Rz3YzaocOvtDOd5 {
+    display: flex;
+    justify-content: space-around;
+    width: 100px;
+  }
+  .sUdnvX7vzeIHO6fy4UBA {
+    width: 40px;
+    height: 20px;
+    text-align: center;
+    background-color: green;
+  }
+  .cdmVZRqHnE4kvHlGRdYS {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 100px;
+    align-self: center;
+  }
+  .jOlMthCofByRsrNO7E1X {
+    text-decoration: line-through;
+  }
+  
+
+/*# sourceMappingURL=main.css.map*/

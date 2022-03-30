@@ -2,39 +2,34 @@ import TodoItem from "./TodoItem";
 import { fireEvent, render, RenderResult } from "@testing-library/react";
 import dataHooks from "./data-hooks";
 import React from "react";
+import { electron } from "webpack";
+import { memoryUsage } from "process";
 
 class TodoItemDriver {
   private wrapper?: RenderResult;
   private todoDescription: string = "";
   private deleteTaskMock: jest.Mock = jest.fn();
   private editTextMock: jest.Mock = jest.fn();
-  private toggleDone: jest.Mock = jest.fn();
+  private baseElementDriver = (dataHook: string) => {
+    const element = () => this.wrapper?.queryByTestId(dataHook);
+    const click = () => {
+      const myElement = element();
+      if (!myElement) {
+        throw new Error("couldnt find element on dom");
+      }
+      fireEvent.click(myElement);
+    };
+    const exists = () => element() != null;
+    return { click, exists };
+  };
 
   private editBtn = () => {
-    const element = this.wrapper?.queryByTestId(dataHooks.editBtn);
-    return {
-      editBtnExists: () => {
-        return element ? true : false;
-      },
-      editBtnClick: () => {
-        if (element) {
-          fireEvent.click(element);
-        }
-      },
-    };
+    const editBtnDriver = this.baseElementDriver(dataHooks.editBtn);
+    return editBtnDriver;
   };
   private deleteBtn = () => {
-    const element = this.wrapper?.queryByTestId(dataHooks.deleteBtn);
-    return {
-      deleteBtnExists: () => {
-        return element ? true : false;
-      },
-      deleteTaskClick: () => {
-        if (element) {
-          fireEvent.click(element);
-        }
-      },
-    };
+    const deleteBtnDriver = this.baseElementDriver(dataHooks.deleteBtn);
+    return deleteBtnDriver;
   };
   private taskTitle = () => {
     const element = this.wrapper?.queryByTestId(dataHooks.title);
@@ -50,27 +45,26 @@ class TodoItemDriver {
       if (element) {
         fireEvent.click(element);
       }
-      
-    }
+    };
     return {
       checkBoxBtnExists: () => {
         return element ? true : false;
       },
       markAsDone: () => {
-        clickCheckBox()
+        clickCheckBox();
       },
       unMarkAsDone: () => {
         clickCheckBox();
       },
       hasCrossLine: () => {
-        return element?.classList.contains('done-task');
+        return element?.classList.contains("done-task");
       },
     };
   };
 
   given = {
-    name: (name: string) => {
-      this.todoDescription = name;
+    title: (title: string) => {
+      this.todoDescription = title;
     },
   };
   when = {
@@ -83,8 +77,8 @@ class TodoItemDriver {
         />
       );
     },
-    clickEdit: () => this.editBtn().editBtnClick(),
-    clickDelete: () => this.deleteBtn().deleteTaskClick(),
+    clickEdit: () => this.editBtn().click(),
+    clickDelete: () => this.deleteBtn().click(),
     markTaskAsDone: () => this.checkBoxBtn().markAsDone(),
     unMarkTaskAsDone: () => this.checkBoxBtn().unMarkAsDone(),
   };
